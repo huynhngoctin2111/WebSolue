@@ -1,0 +1,88 @@
+﻿@page
+@model RegisterModel
+
+<div class="container" style="max-width: 400px; position: absolute; top: 100px; right: 20px;">
+    <div class="card shadow border-0">
+        <div class="card-header bg-secondary bg-gradient py-3">
+            <div class="text-center">
+                @if (User.IsInRole(SD.Role_Admin))
+                {
+                    <h4 class="text-white">Register - ADMIN PORTAL</h4>
+                }
+                else
+                {
+                    <h4 class="text-white">Register</h4>
+                }
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <h5 class="text-secondary text-center mb-4">Create a new account.</h5>
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                <!-- Email -->
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="Email" />
+                    <label asp-for="Input.Email">Email</label>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <!-- Full Name -->
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Name" class="form-control" placeholder="Full Name" />
+                    <label asp-for="Input.Name">Full Name</label>
+                    <span asp-validation-for="Input.Name" class="text-danger"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="Password" />
+                    <label asp-for="Input.Password">Password</label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Confirm Password" />
+                    <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                @if (User.IsInRole(SD.Role_Admin))
+                {
+                    <!-- Admin-Specific Roles -->
+                    <div class="form-floating mb-3">
+                        <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-select">
+                            <option disabled selected>-Select Role-</option>
+                        </select>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select asp-for="Input.CompanyId" style="display: none;" asp-items="@Model.Input.CompanyList" class="form-select">
+                            <option disabled selected>-Select Company-</option>
+                        </select>
+                    </div>
+                }
+
+                <div>
+                    <button id="registerSubmit" type="submit" class="btn btn-primary w-100">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#Input_Role').change(function () {
+                var selection = $('#Input_Role option:selected').text();
+                if (selection === 'Company') {
+                    $('#Input_CompanyId').show();
+                } else {
+                    $('#Input_CompanyId').hide();
+                }
+            });
+        });
+    </script>
+}
